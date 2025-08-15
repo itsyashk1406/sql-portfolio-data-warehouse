@@ -10,10 +10,21 @@ This project demonstrates a comprehensive data warehousing and analytics solutio
 The data architecture for this project follows Medallion Architecture **Bronze**, **Silver**, and **Gold** layers:
 ![Data Architecture](docs/data_architecture.png)
 
-1. **Bronze Layer**: Stores raw data as-is from the source systems. Data is ingested from CSV Files into SQL Server Database.
-2. **Silver Layer**: This layer includes data cleansing, standardization, and normalization processes to prepare data for analysis.
-3. **Gold Layer**: Houses business-ready data modeled into a star schema required for reporting and analytics.
+1. **Bronze Layer**  
+   - Ingests raw data from source systems (CSV files).
+   - Data is parsed, validated (schema & completeness), and loaded as-is into SQL Server.
+   - Full Load strategy via *truncate and insert*.
 
+2. **Silver Layer**  
+   - Cleanses and transforms data (deduplication, data type checks, string trimming, etc.).
+   - Introduces **meta columns** (e.g., `create_date`, `update_date`, `source_system`).
+   - Resolves data quality issues and enforces integrity constraints.
+
+3. **Gold Layer**  
+   - Integrates refined data into a **star schema**: fact and dimension tables.
+   - Business-friendly naming, enriched columns, and optimized for BI tools and reporting.
+   - Ensures integration consistency and data correctness.
+     
 ---
 ## 📖 Project Overview
 
@@ -23,16 +34,50 @@ This project involves:
 2. **ETL Pipelines**: Extracting, transforming, and loading data from source systems into the warehouse.
 3. **Data Modeling**: Developing fact and dimension tables optimized for analytical queries.
 
+
+## 📌 Project Objectives
+
+### 🛠️ Data Engineering
+
+- Design and implement a modern data warehouse using **SQL Server**.
+- Consolidate data from **ERP** and **CRM** source systems.
+- Ensure data quality, integrity, and usability for downstream reporting and analysis.
+
 ---
 
-## 🚀 Project Requirements
+## 🔄 ETL Workflow
 
-### Building the Data Warehouse (Data Engineering)
+### 🔽 Extraction
+- **Type**: Full Extraction  
+- **Technique**: File Parsing (CSV)  
+- Extract data from:
+  - ERP system
+  - CRM system
 
-#### Objective
-Develop a modern data warehouse using SQL Server to consolidate sales data, enabling analytical reporting and informed decision-making.
+### ⬆️ Load
+- **Method**: Full Load using *truncate & insert*  
+- **Storage**: SQL Server database
 
-#### Specifications
+### 🔄 Transformation
+- **SCD Type**: Type 1 (overwrite)
+- **Data Quality Checks**:
+  - Duplicates
+  - Data type mismatches
+  - Invalid business logic
+  - Null or invalid values
+  - Date inconsistencies
+
+---
+
+## ⭐ Star Schema (Gold Layer)
+
+- **Fact Tables**: Capture measurable events (e.g., sales, transactions)
+- **Dimension Tables**: Store descriptive attributes (e.g., customers, products)
+- Use of **Surrogate Keys** for simplified joins and performance optimization
+
+---
+
+### Specifications
 - **Data Sources**: Import data from two source systems (ERP and CRM) provided as CSV files.
 - **Data Quality**: Cleanse and resolve data quality issues prior to analysis.
 - **Integration**: Combine both sources into a single, user-friendly data model designed for analytical queries.
@@ -69,3 +114,14 @@ sql-portfolio-data-warehouse/
 ## 🛡️ License
 
 This project is licensed under the [MIT License](LICENSE). You are free to use, modify, and share this project with proper attribution.
+
+## 🌟 About Me
+
+Hi there! I'm **Yash Kamath**. I am a Third-year Engineering student specializing in Artificial Intelligence and Data Science with a strong passion for transforming data into actionable insights. My expertise spans developing dashboards, reports, and data models that drive business performance. I enjoy mapping business requirements to technical solutions and strive to make complex information meaningful and impactful through compelling data stories.
+
+Let's stay in touch! Feel free to connect with me:
+
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-blue?logo=linkedin)](https://www.linkedin.com/in/yash-kamath1406/)
+[![Portfolio](https://img.shields.io/badge/Portfolio-Notion-black?logo=notion)](https://yashkamath.notion.site/Data-Portfolio-156ea233881c804d83fdf00948968527)
+
