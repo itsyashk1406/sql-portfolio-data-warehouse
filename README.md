@@ -1,27 +1,38 @@
 
-# Data Warehouse Project
+# Cloud Data Warehouse Project
 
-Welcome to the **Data Warehouse Project** repository! 🚀  
-This project demonstrates a comprehensive data warehousing and analytics solution, from building a data warehouse to generating actionable insights.
+Welcome to the ** Cloud Data Warehouse Project** repository! 🚀  
+This project demonstrates a comprehensive  cloud native data warehousing and analytics solution, from building a data warehouse to generating actionable insights.
 
 ---
 ## 🏗️ Data Architecture
 
 The data architecture for this project follows Medallion Architecture **Bronze**, **Silver**, and **Gold** layers:
+
 ![Data Architecture](docs/data_architecture.png)
 
 1. **Bronze Layer**  
-   - Ingests raw data from source systems (CSV files).
-   - Data is parsed, validated (schema & completeness), and loaded as-is into SQL Server.
-   - Full Load strategy via *truncate and insert*.
+   - Ingests raw data from source systems (CSV files) into **Amazon S3**.
+   - Preserves schema and data fidelity using a **full load (truncate & insert)** strategy.
+   - Serves as the immutable raw data storage layer.
 
-2. **Silver Layer**  
-   - Cleanses and transforms data (deduplication, data type checks, string trimming, etc.).
-   - Introduces **meta columns** (e.g., `create_date`, `update_date`, `source_system`).
+2. **Silver Layer**
+   - Transformation jobs built with **AWS Glue (PySpark)**.  
+   - Data Cleansing Steps Performed:
+      - Check for nulls/duplicates in the primary key & update with the latest one using Row_Number
+      - TRIM the text columns 
+      - Data Standardization & Consistency with CASE 
+      - Check for correct datatype (set at DDL)
+      - Invalid Date orders (eg. end_date<start_date)
+      - Handle nulls/negative values
+      - Check for failures in Business Logic like sales!=price*quantity
+      - Data Enrichment ( deriving new columns from exisiting data)
    - Resolves data quality issues and enforces integrity constraints.
+   - Outputs stored as **Parquet files in S3**, registered in the **AWS Glue Data Catalog** for queryability.
 
-3. **Gold Layer**  
-   - Integrates refined data into a **star schema**: fact and dimension tables.
+4. **Gold Layer**
+   - Refined data integrated into **Amazon Redshift Serverless**.
+   - Models into a **star schema**: fact and dimension tables.
    - Business-friendly naming, enriched columns, and optimized for BI tools and reporting.
    - Ensures integration consistency and data correctness.
      
@@ -30,7 +41,7 @@ The data architecture for this project follows Medallion Architecture **Bronze**
 
 This project involves:
 
-1. **Data Architecture**: Designing a Modern Data Warehouse Using Medallion Architecture **Bronze**, **Silver**, and **Gold** layers.
+1. **Data Architecture**: Designing a Modern Data Warehouse on AWS using Medallion Architecture **Bronze**, **Silver**, and **Gold** layers.
 2. **ETL Pipelines**: Extracting, transforming, and loading data from source systems into the warehouse.
 3. **Data Modeling**: Developing fact and dimension tables optimized for analytical queries.
 
